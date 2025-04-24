@@ -1,0 +1,15 @@
+<'constante','constante'>
+<'maximoElementos',IDENT>
+<':',':'>
+<'inteiro','inteiro'>
+<'=','='>
+<'50',NUM_INT>
+<'tipo','tipo'>
+<'tConjunto',IDENT>
+<':',':'>
+<'registro','registro'>
+<'numeroElementos',IDENT>
+<':',':'>
+<'inteiro','inteiro'>
+<'elementos',IDENT>
+Linha 7: [ - simbolo nao identificado

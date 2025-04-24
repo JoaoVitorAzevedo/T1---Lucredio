@@ -1,5 +1,3 @@
 @echo off
-REM gcc.bat recebe: arquivo_entrada caminho_saida
-REM e chama seu .jar com esses dois argumentos
-
-java -jar "C:\Users\joao\Desktop\Projetos\T1---Lucredio\trabalho_t1\target\trabalho_t1.jar" %1 %2
+echo Rodando com entrada: %1 e saída: %2 >> log.txt
+java -jar "C:\Users\joao\Desktop\Projetos\T1---Lucredio\trabalho_t1\target\trabalho_t1-jar-with-dependencies.jar" %1 %2
