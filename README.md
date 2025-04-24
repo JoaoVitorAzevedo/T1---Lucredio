@@ -155,5 +155,5 @@ Este código é fornecido para fins educacionais e de aprendizado. Não há gara
 
 --- 
 
-**Desenvolvedor:** [João Vitor Azevedo]  
+**Desenvolvedor:** João Vitor Azevedo  
 **Data:** Abril de 2025
