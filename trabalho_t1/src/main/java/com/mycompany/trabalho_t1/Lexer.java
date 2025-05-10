@@ -14,9 +14,7 @@ public class Lexer {
     ));
 
     private static final Set<String> SIMBOLOS = new HashSet<>(Arrays.asList(
-        "(", ")", ",", ":", ";", "+", "-", "*", "/", "<-", ".", "..", "&", "%", "^",
-        ">", "<", ">=", "<=", "=", "<>"
-    ));
+        "(", ")", ",", ":", ";", "+", "-", "*", "/", "<-","+",".", "..", "&", "%", "^", ">", "<", ">=", "<=", "=", "<>", "[", "]"));
 
     public static void analisar(String arquivoEntrada, String arquivoSaida) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(arquivoEntrada));
@@ -49,7 +47,7 @@ public class Lexer {
                 continue;
             }
 
-            // Comentários
+            // Comentários multilinha
             if (c == '{') {
                 int inicioLinhaErro = linhaAtual;
                 pos++;
@@ -79,7 +77,7 @@ public class Lexer {
                 continue;
             }
 
-            // Strings
+            // Cadeia de caracteres
             if (c == '"') {
                 int inicio = pos;
                 int inicioLinha = linhaAtual;
@@ -128,7 +126,9 @@ public class Lexer {
                 boolean temPonto = false;
                 while (pos < conteudo.length() && (Character.isDigit(conteudo.charAt(pos)) || conteudo.charAt(pos) == '.')) {
                     if (conteudo.charAt(pos) == '.') {
-                        if (temPonto) break;
+                        if (temPonto || (pos + 1 < conteudo.length() && conteudo.charAt(pos + 1) == '.')) {
+                            break;
+                        }
                         temPonto = true;
                     }
                     pos++;
@@ -177,7 +177,7 @@ public class Lexer {
         try {
             analisar(args[0], args[1]);
         } catch (IOException e) {
-            // Erros ignorados silenciosamente conforme exigência do corretor
+            // silencioso conforme requisito do corretor
         }
     }
 }

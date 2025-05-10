@@ -1,5 +1,7 @@
 package com.mycompany.trabalho_t1;
 
+import java.io.IOException;
+
 
 public class Main {
     public static void main(String[] args) {
@@ -13,7 +15,7 @@ public class Main {
 
         try {
             Lexer.analisar(arquivoEntrada, arquivoSaida);
-        } catch (Exception e) {
+        } catch (IOException e) {
             // Também não imprime erro no console
         }
     }

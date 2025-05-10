@@ -157,3 +157,8 @@ Este código é fornecido para fins educacionais e de aprendizado. Não há gara
 
 **Desenvolvedor:** João Vitor Azevedo  
 **Data:** Abril de 2025
+
+
+rodei: 
+java -jar C:/Users/joao/Desktop/Projetos/T1---Lucredio/compiladores-corretor-automatico-1.0-SNAPSHOT-jar-with-dependencies.jar  C:/Users/joao/Desktop/Projetos/T1---Lucredio/trabalho_t1/gcc.bat gcc C:/Users/joao/Desktop/Projetos/T1---Lucredio/trabalho_t1/temp_saida C:/Users/joao/Desktop/Projetos/T1---Lucredio/casos-de-teste "743554" "t1"
+
