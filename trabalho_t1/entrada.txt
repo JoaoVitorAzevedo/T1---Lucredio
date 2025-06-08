@@ -1,7 +1,0 @@
-algoritmo
-declare
-  nome: literal
-declare
-  idade: inteiro
-escreva(nome)
-fim_algoritmo

@@ -14,7 +14,9 @@ public class Lexer {
     ));
 
     private static final Set<String> SIMBOLOS = new HashSet<>(Arrays.asList(
-        "(", ")", ",", ":", ";", "+", "-", "*", "/", "<-","+",".", "..", "&", "%", "^", ">", "<", ">=", "<=", "=", "<>", "[", "]"));
+        "(", ")", ",", ":", ";", "+", "-", "*", "/", "<-", ".", "..", "&", "%", "^",
+        ">", "<", ">=", "<=", "=", "<>", "[", "]"
+    ));
 
     public static void analisar(String arquivoEntrada, String arquivoSaida) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(arquivoEntrada));
@@ -47,27 +49,21 @@ public class Lexer {
                 continue;
             }
 
-            // Comentários multilinha
+            // Comentários (deve fechar na mesma linha)
             if (c == '{') {
                 int inicioLinhaErro = linhaAtual;
                 pos++;
                 colunaAtual++;
                 boolean fechado = false;
-                while (pos < conteudo.length()) {
-                    c = conteudo.charAt(pos);
-                    if (c == '}') {
+                while (pos < conteudo.length() && conteudo.charAt(pos) != '\n') {
+                    if (conteudo.charAt(pos) == '}') {
                         fechado = true;
                         pos++;
                         colunaAtual++;
                         break;
                     }
-                    if (c == '\n') {
-                        linhaAtual++;
-                        colunaAtual = 1;
-                    } else {
-                        colunaAtual++;
-                    }
                     pos++;
+                    colunaAtual++;
                 }
                 if (!fechado) {
                     writer.write("Linha " + inicioLinhaErro + ": comentario nao fechado\n");
@@ -77,7 +73,7 @@ public class Lexer {
                 continue;
             }
 
-            // Cadeia de caracteres
+            // Cadeias de caracteres
             if (c == '"') {
                 int inicio = pos;
                 int inicioLinha = linhaAtual;
@@ -97,17 +93,55 @@ public class Lexer {
                     writer.close();
                     return;
                 }
-                pos++; // pula '"'
+                pos++; // fecha "
                 colunaAtual++;
                 String lexema = conteudo.substring(inicio, pos);
                 writer.write("<'" + lexema + "',CADEIA>\n");
                 continue;
             }
 
+            // Símbolos compostos (verificar antes de números)
+            if (pos + 1 < conteudo.length()) {
+                String simb = conteudo.substring(pos, pos + 2);
+                if (SIMBOLOS.contains(simb)) {
+                    writer.write("<'" + simb + "','" + simb + "'>\n");
+                    pos += 2;
+                    colunaAtual += 2;
+                    continue;
+                }
+            }
+
+            // Números (int e real)
+            if (Character.isDigit(c)) {
+                int inicio = pos;
+                boolean temPonto = false;
+
+                while (pos < conteudo.length() &&
+                        (Character.isDigit(conteudo.charAt(pos)) ||
+                                (conteudo.charAt(pos) == '.' &&
+                                !temPonto &&
+                                (pos + 1 < conteudo.length()) && conteudo.charAt(pos + 1) != '.'))) {
+                    if (conteudo.charAt(pos) == '.') {
+                        temPonto = true;
+                    }
+                    pos++;
+                    colunaAtual++;
+                }
+
+                String lexema = conteudo.substring(inicio, pos);
+                if (temPonto) {
+                    writer.write("<'" + lexema + "',NUM_REAL>\n");
+                } else {
+                    writer.write("<'" + lexema + "',NUM_INT>\n");
+                }
+                continue;
+            }
+
             // Identificadores e palavras reservadas
             if (Character.isLetter(c) || c == '_') {
                 int inicio = pos;
-                while (pos < conteudo.length() && (Character.isLetterOrDigit(conteudo.charAt(pos)) || conteudo.charAt(pos) == '_')) {
+                while (pos < conteudo.length() &&
+                        (Character.isLetterOrDigit(conteudo.charAt(pos)) || conteudo.charAt(pos) == '_')) {
                     pos++;
                     colunaAtual++;
                 }
@@ -118,40 +152,6 @@ public class Lexer {
                     writer.write("<'" + lexema + "',IDENT>\n");
                 }
                 continue;
-            }
-
-            // Números (int e real)
-            if (Character.isDigit(c)) {
-                int inicio = pos;
-                boolean temPonto = false;
-                while (pos < conteudo.length() && (Character.isDigit(conteudo.charAt(pos)) || conteudo.charAt(pos) == '.')) {
-                    if (conteudo.charAt(pos) == '.') {
-                        if (temPonto || (pos + 1 < conteudo.length() && conteudo.charAt(pos + 1) == '.')) {
-                            break;
-                        }
-                        temPonto = true;
-                    }
-                    pos++;
-                    colunaAtual++;
-                }
-                String lexema = conteudo.substring(inicio, pos);
-                if (temPonto) {
-                    writer.write("<'" + lexema + "',NUM_REAL>\n");
-                } else {
-                    writer.write("<'" + lexema + "',NUM_INT>\n");
-                }
-                continue;
-            }
-
-            // Símbolos compostos
-            if (pos + 1 < conteudo.length()) {
-                String simb = conteudo.substring(pos, pos + 2);
-                if (SIMBOLOS.contains(simb)) {
-                    writer.write("<'" + simb + "','" + simb + "'>\n");
-                    pos += 2;
-                    colunaAtual += 2;
-                    continue;
-                }
             }
 
             // Símbolos simples
@@ -177,7 +177,7 @@ public class Lexer {
         try {
             analisar(args[0], args[1]);
         } catch (IOException e) {
-            // silencioso conforme requisito do corretor
+            // Ignorado conforme exigência do corretor
         }
     }
 }
