@@ -1,0 +1,19 @@
+<'algoritmo','algoritmo'>
+<'declare','declare'>
+<'valor',IDENT>
+<':',':'>
+<'inteiro','inteiro'>
+<'declare','declare'>
+<'ponteiro',IDENT>
+<':',':'>
+<'^','^'>
+<'inteiro','inteiro'>
+<'valor',IDENT>
+<'<-','<-'>
+<'100',NUM_INT>
+<'ponteiro',IDENT>
+<'<-','<-'>
+<'&','&'>
+<'valor',IDENT>
+<'^','^'>
+Linha 14: ! - simbolo nao identificado

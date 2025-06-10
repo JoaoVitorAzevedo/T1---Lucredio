@@ -1,0 +1,7 @@
+<'algoritmo','algoritmo'>
+<'declare','declare'>
+<'totalBebidas',IDENT>
+<',',','>
+<'totalAlimentos',IDENT>
+<',',','>
+Linha 5: @ - simbolo nao identificado
