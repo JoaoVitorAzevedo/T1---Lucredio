@@ -271,7 +271,7 @@ OP_REL_MAIOR: '>';
 OP_REL_MENOR: '<';
 
 // Tokens complexos
-CADEIA: '"' ( ~["\n] )*? '"';
+CADEIA: '"' ( ~["\n] )* '"';
 NUM_INT: [0-9]+;
 NUM_REAL: [0-9]+ '.' [0-9]+;
 IDENT: [a-zA-Z_] [a-zA-Z0-9_]*;
