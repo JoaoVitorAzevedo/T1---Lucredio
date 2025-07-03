@@ -56,7 +56,7 @@ java -jar <caminho_para_o_corretor.jar> ^
     <nome_do_compilador> ^
     <diretorio_de_saida> ^
     <diretorio_casos_testes> ^
-    "<seu_RA>" "<t2>"
+    "<RA_Aluno>" "<t2>"
 ```
 
 ## Exemplo (Como eu rodei):
