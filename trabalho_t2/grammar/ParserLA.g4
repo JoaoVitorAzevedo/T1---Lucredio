@@ -42,7 +42,8 @@ tipo_basico
     ;
 
 tipo_estendido
-    : tipo_basico_ident ('^')?
+    : ('^')? tipo_basico_ident
+
     ;
 
 tipo_basico_ident
