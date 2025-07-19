@@ -1,14 +1,13 @@
-package com.mycompany.trabalho_t4;
+package com.mycompany.trabalho_t5;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import org.antlr.v4.runtime.Token;
 
-import static com.mycompany.trabalho_t4.LASemanticoUtils.verificarTipo;
-import static com.mycompany.trabalho_t4.LASemanticoUtils.verificaCompatibilidade;
-import static com.mycompany.trabalho_t4.LASemanticoUtils.confereTipo;
-import static com.mycompany.trabalho_t4.LASemanticoUtils.addErroSemantico;
+import static com.mycompany.trabalho_t5.LASemanticoUtils.verificarTipo;
+import static com.mycompany.trabalho_t5.LASemanticoUtils.verificaCompatibilidade;
+import static com.mycompany.trabalho_t5.LASemanticoUtils.confereTipo;
+import static com.mycompany.trabalho_t5.LASemanticoUtils.addErroSemantico;
 
 public class LogicaVisitor extends ParserLABaseVisitor<Void> {
 
@@ -17,60 +16,81 @@ public class LogicaVisitor extends ParserLABaseVisitor<Void> {
 
     // Gerenciador de escopos aninhados.
     static GerenciadorEscopos escoposAninhados = new GerenciadorEscopos();
-    
+
     // Armazena os parâmetros de funções e procedimentos.
     static HashMap<String, ArrayList<Tipo>> dadosFuncaoProcedimento = new HashMap<>();
 
     // Armazena a definição de tipos de registro.
     HashMap<String, ArrayList<String>> tabelaRegistro = new HashMap<>();
-    
-    
-    
-    public TabelaSimbolos getTabela() {
-        return tabela;
+
+    public TabelaSimbolos getTabelaSimbolos() {
+        return escoposAninhados.obterEscopoAtual();
     }
 
     public HashMap<String, ArrayList<String>> getTabelaRegistro() {
         return tabelaRegistro;
     }
 
+    public static HashMap<String, ArrayList<Tipo>> getDadosFuncaoProcedimento() {
+        return dadosFuncaoProcedimento;
+    }
+
     // Adiciona um símbolo à tabela do escopo atual e realiza validações.
-    public void adddSimboloTabela(String nome, String tipo, Token nomeT, Token tipoT, TipoEntrada tipoE) {
+    public void addSimboloTabela(String nome, String tipo, Token nomeT, Token tipoT, TipoEntrada tipoE) {
         TabelaSimbolos tabelaLocal = escoposAninhados.obterEscopoAtual();
         Tipo tipoItem;
 
         // Remove o ponteiro (^) do tipo, se presente.
-        if (tipo.charAt(0) == '^')
+        if (tipo.charAt(0) == '^') {
             tipo = tipo.substring(1);
+        }
 
         // Converte o tipo textual para o enumerador Tipo.
         switch (tipo) {
-            case "literal": tipoItem = Tipo.LITERAL; break;
-            case "inteiro": tipoItem = Tipo.INTEIRO; break;
-            case "real": tipoItem = Tipo.REAL; break;
-            case "logico": tipoItem = Tipo.LOGICO; break;
-            case "void": tipoItem = Tipo.VOID; break;
-            case "registro": tipoItem = Tipo.REGISTRO; break;
-            default: tipoItem = Tipo.INVALIDO; break;
+            case "literal":
+                tipoItem = Tipo.LITERAL;
+                break;
+            case "inteiro":
+                tipoItem = Tipo.INTEIRO;
+                break;
+            case "real":
+                tipoItem = Tipo.REAL;
+                break;
+            case "logico":
+                tipoItem = Tipo.LOGICO;
+                break;
+            case "void":
+                tipoItem = Tipo.VOID;
+                break;
+            case "registro":
+                tipoItem = Tipo.REGISTRO;
+                break;
+            default:
+                tipoItem = Tipo.INVALIDO;
+                break;
         }
 
         // Emite erro se o tipo não for reconhecido.
-        if (tipoItem == Tipo.INVALIDO)
+        if (tipoItem == Tipo.INVALIDO) {
             addErroSemantico(tipoT, "tipo " + tipo + " nao declarado");
+        }
 
         // Adiciona o símbolo ou reporta erro se já declarado.
-        if (!tabelaLocal.existeSimbolo(nome))
+        if (!tabelaLocal.existeSimbolo(nome)) {
             tabelaLocal.addSimbolo(nome, tipoItem, tipoE);
-        else
+        } else {
             addErroSemantico(nomeT, "identificador " + nome + " ja declarado anteriormente");
+        }
     }
 
     @Override
     public Void visitPrograma(ParserLAParser.ProgramaContext ctx) {
         // Valida se 'retorne' é usado indevidamente no escopo principal.
-        for (ParserLAParser.CmdContext c : ctx.corpo().cmd())
-            if (c.cmdRetorne() != null)
+        for (ParserLAParser.CmdContext c : ctx.corpo().cmd()) {
+            if (c.cmdRetorne() != null) {
                 addErroSemantico(c.getStart(), "comando retorne nao permitido nesse escopo");
+            }
+        }
 
         return super.visitPrograma(ctx);
     }
@@ -88,13 +108,13 @@ public class LogicaVisitor extends ParserLABaseVisitor<Void> {
             if (ctx.variavel().tipo().registro() != null) {
                 for (ParserLAParser.IdentificadorContext ic : ctx.variavel().identificador()) {
                     // Adiciona o nome do registro como variável do tipo 'registro'.
-                    adddSimboloTabela(ic.getText(), "registro", ic.getStart(), null, TipoEntrada.VARIAVEL);
+                    addSimboloTabela(ic.getText(), "registro", ic.getStart(), null, TipoEntrada.VARIAVEL);
 
                     // Adiciona os campos internos como variáveis qualificadas (ex: reg.campo).
                     for (ParserLAParser.VariavelContext vc : ctx.variavel().tipo().registro().variavel()) {
                         tipoVariavel = vc.tipo().getText();
                         for (ParserLAParser.IdentificadorContext icr : vc.identificador()) {
-                            adddSimboloTabela(ic.getText() + "." + icr.getText(), tipoVariavel, icr.getStart(), vc.tipo().getStart(), TipoEntrada.VARIAVEL);
+                            addSimboloTabela(ic.getText() + "." + icr.getText(), tipoVariavel, icr.getStart(), vc.tipo().getStart(), TipoEntrada.VARIAVEL);
                         }
                     }
                 }
@@ -114,11 +134,11 @@ public class LogicaVisitor extends ParserLABaseVisitor<Void> {
                             addErroSemantico(ic.getStart(), "identificador " + nomeVariavel + " ja declarado anteriormente");
                         } else {
                             // Adiciona a variável do tipo registro.
-                            adddSimboloTabela(nomeVariavel, "registro", ic.getStart(), ctx.variavel().tipo().getStart(), TipoEntrada.VARIAVEL);
+                            addSimboloTabela(nomeVariavel, "registro", ic.getStart(), ctx.variavel().tipo().getStart(), TipoEntrada.VARIAVEL);
 
                             // Adiciona os campos do registro com nomes qualificados (ex: var.campo).
                             for (int i = 0; i < variaveisRegistro.size(); i += 2) {
-                                adddSimboloTabela(nomeVariavel + "." + variaveisRegistro.get(i), variaveisRegistro.get(i+1), ic.getStart(), ctx.variavel().tipo().getStart(), TipoEntrada.VARIAVEL);
+                                addSimboloTabela(nomeVariavel + "." + variaveisRegistro.get(i), variaveisRegistro.get(i + 1), ic.getStart(), ctx.variavel().tipo().getStart(), TipoEntrada.VARIAVEL);
                             }
                         }
                     }
@@ -128,10 +148,11 @@ public class LogicaVisitor extends ParserLABaseVisitor<Void> {
                         nomeVariavel = ident.getText();
 
                         // Verifica se o identificador colide com uma função ou procedimento.
-                        if (dadosFuncaoProcedimento.containsKey(nomeVariavel))
+                        if (dadosFuncaoProcedimento.containsKey(nomeVariavel)) {
                             addErroSemantico(ident.getStart(), "identificador " + nomeVariavel + " ja declarado anteriormente");
-                        else
-                            adddSimboloTabela(nomeVariavel, tipoVariavel, ident.getStart(), ctx.variavel().tipo().getStart(), TipoEntrada.VARIAVEL); 
+                        } else {
+                            addSimboloTabela(nomeVariavel, tipoVariavel, ident.getStart(), ctx.variavel().tipo().getStart(), TipoEntrada.VARIAVEL);
+                        }
                     }
                 }
             }
@@ -154,7 +175,7 @@ public class LogicaVisitor extends ParserLABaseVisitor<Void> {
             }
         } else if (ctx.getText().contains("constante")) {
             // Declaração de constante.
-            adddSimboloTabela(ctx.IDENT().getText(), ctx.tipo_basico().getText(), ctx.IDENT().getSymbol(), ctx.IDENT().getSymbol(), TipoEntrada.VARIAVEL);
+            addSimboloTabela(ctx.IDENT().getText(), ctx.tipo_basico().getText(), ctx.IDENT().getSymbol(), ctx.IDENT().getSymbol(), TipoEntrada.VARIAVEL);
         }
 
         return super.visitDeclaracao_local(ctx);
@@ -169,37 +190,39 @@ public class LogicaVisitor extends ParserLABaseVisitor<Void> {
         ArrayList<Tipo> tiposVariaveis = new ArrayList<>();
         Tipo tipoAux;
         ArrayList<String> varReg;
-        
 
         if (ctx.getText().contains("procedimento")) {
             // Processa os parâmetros do procedimento.
             for (ParserLAParser.ParametroContext parametro : ctx.parametros().parametro()) {
                 // Parâmetro de tipo básico.
                 if (parametro.tipo_estendido().tipo_basico_ident().tipo_basico() != null) {
-                    adddSimboloTabela(parametro.identificador().get(0).getText(), parametro.tipo_estendido().tipo_basico_ident().tipo_basico().getText(), parametro.getStart(), parametro.getStart(), TipoEntrada.VARIAVEL);
+                    addSimboloTabela(parametro.identificador().get(0).getText(), parametro.tipo_estendido().tipo_basico_ident().tipo_basico().getText(), parametro.getStart(), parametro.getStart(), TipoEntrada.VARIAVEL);
                     tipoAux = confereTipo(tabelaRegistro, parametro.tipo_estendido().getText());
                     tiposVariaveis.add(tipoAux);
-                } 
-                // Parâmetro de tipo registro definido anteriormente.
+                } // Parâmetro de tipo registro definido anteriormente.
                 else if (tabelaRegistro.containsKey(parametro.tipo_estendido().tipo_basico_ident().IDENT().getText())) {
                     varReg = tabelaRegistro.get(parametro.tipo_estendido().tipo_basico_ident().IDENT().getText());
                     tipoAux = confereTipo(tabelaRegistro, parametro.tipo_estendido().getText());
                     tiposVariaveis.add(tipoAux);
 
                     // Adiciona os campos internos do registro como variáveis locais.
-                    for (ParserLAParser.IdentificadorContext ic : parametro.identificador())
-                        for (int i = 0; i < varReg.size(); i += 2)
-                            adddSimboloTabela(ic.getText() + "." + varReg.get(i), varReg.get(i + 1), ic.getStart(), ic.getStart(), TipoEntrada.VARIAVEL);                        
+                    for (ParserLAParser.IdentificadorContext ic : parametro.identificador()) {
+                        for (int i = 0; i < varReg.size(); i += 2) {
+                            addSimboloTabela(ic.getText() + "." + varReg.get(i), varReg.get(i + 1), ic.getStart(), ic.getStart(), TipoEntrada.VARIAVEL);
+                        }
+                    }
                 } else {
                     // Tipo do parâmetro não foi declarado.
-                    addErroSemantico(parametro.getStart(), "tipo nao declarado");                        
+                    addErroSemantico(parametro.getStart(), "tipo nao declarado");
                 }
             }
 
             // Verifica presença indevida de 'retorne' em procedimentos.
-            for (ParserLAParser.CmdContext c : ctx.cmd())    
-                if (c.cmdRetorne() != null)  
+            for (ParserLAParser.CmdContext c : ctx.cmd()) {
+                if (c.cmdRetorne() != null) {
                     addErroSemantico(c.getStart(), "comando retorne nao permitido nesse escopo");
+                }
+            }
 
             dadosFuncaoProcedimento.put(ctx.IDENT().getText(), tiposVariaveis);
 
@@ -207,7 +230,7 @@ public class LogicaVisitor extends ParserLABaseVisitor<Void> {
             // Processamento similar para funções.
             for (ParserLAParser.ParametroContext parametro : ctx.parametros().parametro()) {
                 if (parametro.tipo_estendido().tipo_basico_ident().tipo_basico() != null) {
-                    adddSimboloTabela(parametro.identificador().get(0).getText(), parametro.tipo_estendido().tipo_basico_ident().tipo_basico().getText(), parametro.getStart(), parametro.getStart(), TipoEntrada.VARIAVEL);
+                    addSimboloTabela(parametro.identificador().get(0).getText(), parametro.tipo_estendido().tipo_basico_ident().tipo_basico().getText(), parametro.getStart(), parametro.getStart(), TipoEntrada.VARIAVEL);
                     tipoAux = confereTipo(tabelaRegistro, parametro.tipo_estendido().getText());
                     tiposVariaveis.add(tipoAux);
                 } else if (tabelaRegistro.containsKey(parametro.tipo_estendido().tipo_basico_ident().IDENT().getText())) {
@@ -215,9 +238,11 @@ public class LogicaVisitor extends ParserLABaseVisitor<Void> {
                     tipoAux = confereTipo(tabelaRegistro, parametro.tipo_estendido().getText());
                     tiposVariaveis.add(tipoAux);
 
-                    for (ParserLAParser.IdentificadorContext ic : parametro.identificador())
-                        for (int i = 0; i < varReg.size(); i += 2)
-                            adddSimboloTabela(ic.getText() + "." + varReg.get(i), varReg.get(i + 1), ic.getStart(), ic.getStart(), TipoEntrada.VARIAVEL);
+                    for (ParserLAParser.IdentificadorContext ic : parametro.identificador()) {
+                        for (int i = 0; i < varReg.size(); i += 2) {
+                            addSimboloTabela(ic.getText() + "." + varReg.get(i), varReg.get(i + 1), ic.getStart(), ic.getStart(), TipoEntrada.VARIAVEL);
+                        }
+                    }
                 } else {
                     addErroSemantico(parametro.getStart(), "tipo nao declarado");
                 }
@@ -231,35 +256,37 @@ public class LogicaVisitor extends ParserLABaseVisitor<Void> {
         escoposAninhados.sairEscopo();
 
         // Adiciona o identificador global da função/procedimento.
-        if (ctx.getText().contains("procedimento"))    
-            adddSimboloTabela(ctx.IDENT().getText(), "void", ctx.getStart(), ctx.getStart(), TipoEntrada.PROCEDIMENTO);
-        else if (ctx.getText().contains("funcao"))
-            adddSimboloTabela(ctx.IDENT().getText(), ctx.tipo_estendido().tipo_basico_ident().tipo_basico().getText(), ctx.getStart(), ctx.getStart(), TipoEntrada.FUNCAO);
+        if (ctx.getText().contains("procedimento")) {
+            addSimboloTabela(ctx.IDENT().getText(), "void", ctx.getStart(), ctx.getStart(), TipoEntrada.PROCEDIMENTO);
+        } else if (ctx.getText().contains("funcao")) {
+            addSimboloTabela(ctx.IDENT().getText(), ctx.tipo_estendido().tipo_basico_ident().tipo_basico().getText(), ctx.getStart(), ctx.getStart(), TipoEntrada.FUNCAO);
+        }
 
         return null;
     }
-
-    
 
     @Override
     public Void visitCmdEscreva(ParserLAParser.CmdEscrevaContext ctx) {
         // Verifica os tipos das expressões no 'escreva'.
         tabela = escoposAninhados.obterEscopoAtual();
-        for (ParserLAParser.ExpressaoContext expressao : ctx.expressao())
+        for (ParserLAParser.ExpressaoContext expressao : ctx.expressao()) {
             verificarTipo(tabela, expressao);
+        }
         return super.visitCmdEscreva(ctx);
     }
-    
+
     @Override
     public Void visitCmdLeia(ParserLAParser.CmdLeiaContext ctx) {
         // Verifica se os identificadores no 'leia' foram declarados.
         tabela = escoposAninhados.obterEscopoAtual();
-        for (ParserLAParser.IdentificadorContext id : ctx.identificador()) 
-            if (!tabela.existeSimbolo(id.getText()))
+        for (ParserLAParser.IdentificadorContext id : ctx.identificador()) {
+            if (!tabela.existeSimbolo(id.getText())) {
                 addErroSemantico(id.getStart(), "identificador " + id.getText() + " nao declarado");
+            }
+        }
         return super.visitCmdLeia(ctx);
     }
-    
+
     @Override
     public Void visitCmdSe(ParserLAParser.CmdSeContext ctx) {
         // Verifica o tipo da expressão no 'se'.
@@ -276,8 +303,6 @@ public class LogicaVisitor extends ParserLABaseVisitor<Void> {
         return super.visitCmdEnquanto(ctx);
     }
 
-    
-
     @Override
     public Void visitCmdAtribuicao(ParserLAParser.CmdAtribuicaoContext ctx) {
         // Verifica a atribuição.
@@ -293,8 +318,9 @@ public class LogicaVisitor extends ParserLABaseVisitor<Void> {
 
                 if (varTipo == Tipo.INTEIRO || varTipo == Tipo.REAL) {
                     if (ctx.getText().contains("ponteiro")) {
-                        if (!verificaCompatibilidade(varTipo, tipoExpressao) && tipoExpressao != Tipo.INTEIRO)
+                        if (!verificaCompatibilidade(varTipo, tipoExpressao) && tipoExpressao != Tipo.INTEIRO) {
                             addErroSemantico(ctx.identificador().getStart(), "atribuicao nao compativel para ^" + varNome);
+                        }
                     } else if (!verificaCompatibilidade(varTipo, tipoExpressao) && tipoExpressao != Tipo.INTEIRO) {
                         addErroSemantico(ctx.identificador().getStart(), "atribuicao nao compativel para " + varNome);
                     }
@@ -305,10 +331,4 @@ public class LogicaVisitor extends ParserLABaseVisitor<Void> {
         }
         return super.visitCmdAtribuicao(ctx);
     }
-
-    
-    
-    
-    
-    
 }

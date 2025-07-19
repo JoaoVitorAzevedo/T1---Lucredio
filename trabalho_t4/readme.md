@@ -90,6 +90,5 @@ java -jar compiladores-corretor-automatico.jar \
 
 *Projeto desenvolvido para a disciplina Construção de Compiladores - UFSCar*
 
----
 
-**Nota**: Este README assume que a estrutura do projeto e ferramentas são as mesmas do T3. Caso haja mudanças significativas na infraestrutura, atualize as seções correspondentes.
+

@@ -78,6 +78,10 @@ java -jar "C:/Users/joao/Desktop/Projetos/construcao_de_compiladores/T1---Lucred
     "743554" "t3"
 
 ```
+Ou
+```Bash
+java -jar "C:/Users/joao/Desktop/Projetos/construcao_de_compiladores/T1---Lucredio/compiladores-corretor-automatico-1.0-SNAPSHOT-jar-with-dependencies.jar"     "C:/Users/joao/Desktop/Projetos/construcao_de_compiladores/T1---Lucredio/trabalho_t3/gcc.bat"     "gcc"     "C:/Users/joao/Desktop/Projetos/construcao_de_compiladores/T1---Lucredio/trabalho_t3/temp_saida"     "C:/Users/joao/Desktop/Projetos/construcao_de_compiladores/T1---Lucredio/casos-de-teste"     "743554" "t3"
+```
 
 
 ## Autores

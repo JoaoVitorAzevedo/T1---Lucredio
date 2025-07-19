@@ -1,5 +1,5 @@
 // Generated from grammar/ParserLA.g4 by ANTLR 4.13.2
-package com.mycompany.trabalho_t4;
+package com.mycompany.trabalho_t5;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
 /**

@@ -1,7 +1,6 @@
 package com.mycompany.trabalho_t4;
 
 import com.mycompany.trabalho_t4.ParserLAParser.ProgramaContext;
-// A importação de 'File' foi trocada por 'FileWriter' para refletir a lógica do Código 2
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -36,10 +35,8 @@ public class LASemanticoMain {
             LogicaVisitor utilitario = new LogicaVisitor();
             ProgramaContext arvore = parser.programa();
 
-            //Chama o visitor
             utilitario.visitPrograma(arvore);
 
-            // troca listeners de erro
             LASemanticoUtils.errosSemanticos.forEach((erro) -> pw.println(erro));
             pw.println("Fim da compilacao");
             pw.close();

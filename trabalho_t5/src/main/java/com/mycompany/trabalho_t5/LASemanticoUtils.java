@@ -1,7 +1,7 @@
-package com.mycompany.trabalho_t4;
+package com.mycompany.trabalho_t5;
 
-import static com.mycompany.trabalho_t4.LogicaVisitor.dadosFuncaoProcedimento;
-import static com.mycompany.trabalho_t4.LogicaVisitor.escoposAninhados;
+import static com.mycompany.trabalho_t5.LogicaVisitor.dadosFuncaoProcedimento;
+import static com.mycompany.trabalho_t5.LogicaVisitor.escoposAninhados;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;

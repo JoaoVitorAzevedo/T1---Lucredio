@@ -1,5 +1,5 @@
 // Generated from grammar/ParserLA.g4 by ANTLR 4.13.2
-package com.mycompany.trabalho_t4;
+package com.mycompany.trabalho_t5;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;
@@ -10,7 +10,7 @@ import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.misc.*;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue", "this-escape"})
-public class ParserLALexer extends Lexer {
+public class LALexer extends Lexer {
 	static { RuntimeMetaData.checkVersion("4.13.2", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
@@ -110,7 +110,7 @@ public class ParserLALexer extends Lexer {
 	}
 
 
-	public ParserLALexer(CharStream input) {
+	public LALexer(CharStream input) {
 		super(input);
 		_interp = new LexerATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}

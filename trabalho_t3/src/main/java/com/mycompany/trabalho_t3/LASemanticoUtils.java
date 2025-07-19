@@ -18,7 +18,7 @@ public class LASemanticoUtils extends ParserLABaseVisitor<Void> {
 
     TabelaSimbolos tabelaEscopo;
 
-    // Adiciona uma variável à tabela de símbolos, verificando a validade do tipo e declarações duplicadas
+    // Adiciona uma variável à tabela de símbolos após verificações
     public void adicionaVariavelTabela(String nome, String tipo, Token nomeT, Token tipoT) {
         tabelaEscopo = escopos.obterEscopoAtual();
 

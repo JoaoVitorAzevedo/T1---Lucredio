@@ -1,9 +1,9 @@
-package com.mycompany.trabalho_t4;
+package com.mycompany.trabalho_t5;
 
 import java.util.Map;
 import java.util.HashMap;
 
-import static com.mycompany.trabalho_t4.LASemanticoUtils.cortarNoSimbolo;
+import static com.mycompany.trabalho_t5.LASemanticoUtils.cortarNoSimbolo;
 
 // Representa uma tabela de simbolos
 public class TabelaSimbolos {
@@ -24,6 +24,7 @@ public class TabelaSimbolos {
         return simbolos.containsKey(nome);
     }
 
+    
     public void addSimbolo(String nome, Tipo tipo, TipoEntrada tipoEntrada) {
         nome = cortarNoSimbolo(nome, "[");
         simbolos.put(nome, new Simbolo(nome, tipo, tipoEntrada));

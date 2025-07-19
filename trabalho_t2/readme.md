@@ -67,7 +67,7 @@ C:/Users/joao/Desktop/Projetos/construcao_de_compiladores/T1---Lucredio/trabalho
 gcc \
 C:/Users/joao/Desktop/Projetos/construcao_de_compiladores/T1---Lucredio/trabalho_t2/temp_saida \
 C:/Users/joao/Desktop/Projetos/construcao_de_compiladores/T1---Lucredio/casos-de-teste \
-"743554" "t2"
+"743554" \ "t2"
 ```
 
 Ou
